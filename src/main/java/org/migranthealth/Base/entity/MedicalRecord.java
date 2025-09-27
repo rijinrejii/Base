@@ -2,6 +2,8 @@ package org.migranthealth.Base.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -9,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -16,6 +19,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "medical_records")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MedicalRecord {
     
     @Id
@@ -24,6 +28,7 @@ public class MedicalRecord {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "password"})
     private Patient patient;
     
     @Column(nullable = false)
@@ -36,8 +41,16 @@ public class MedicalRecord {
     private String treatment;
     
     private String doctorName;
-    
     private LocalDateTime visitDate;
+    
+    // File-related fields
+    private String fileName;
+    private String fileType;
+    private Long fileSize;
+    
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] fileData;
     
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -65,7 +78,7 @@ public class MedicalRecord {
         this.visitDate = LocalDateTime.now();
     }
     
-    // Getters and Setters
+    // All getters and setters remain the same
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -86,6 +99,18 @@ public class MedicalRecord {
     
     public LocalDateTime getVisitDate() { return visitDate; }
     public void setVisitDate(LocalDateTime visitDate) { this.visitDate = visitDate; }
+    
+    public String getFileName() { return fileName; }
+    public void setFileName(String fileName) { this.fileName = fileName; }
+    
+    public String getFileType() { return fileType; }
+    public void setFileType(String fileType) { this.fileType = fileType; }
+    
+    public Long getFileSize() { return fileSize; }
+    public void setFileSize(Long fileSize) { this.fileSize = fileSize; }
+    
+    public byte[] getFileData() { return fileData; }
+    public void setFileData(byte[] fileData) { this.fileData = fileData; }
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

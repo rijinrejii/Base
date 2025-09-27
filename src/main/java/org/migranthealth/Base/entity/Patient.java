@@ -3,6 +3,9 @@ package org.migranthealth.Base.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +19,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "patients")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Patient {
     
     @Id
@@ -34,10 +38,13 @@ public class Patient {
     @Column(nullable = false)
     private String phoneNumber;
     
+    // Password field - allow in JSON for registration, but hide in responses
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(nullable = false)
+    private String password;
+    
     private LocalDate dateOfBirth;
-    
     private String address;
-    
     private String nationality;
     
     @Enumerated(EnumType.STRING)
@@ -73,7 +80,15 @@ public class Patient {
         this.phoneNumber = phoneNumber;
     }
     
-    // Getters and Setters
+    public Patient(String firstName, String lastName, String email, String phoneNumber, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
+    
+    // All getters and setters remain the same
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
@@ -88,6 +103,9 @@ public class Patient {
     
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
     
     public LocalDate getDateOfBirth() { return dateOfBirth; }
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
